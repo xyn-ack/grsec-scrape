@@ -1,3 +1,398 @@
+commit b088cabd42c6fe825baa27f40ab450ad75e571d3
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Oct 25 18:09:55 2015 -0400
+
+    Temporarily work around an ICE on GCC >= 5 reported by Daniel Micay due to
+    backporting of __builtin_usub_overflow
+
+ include/linux/compiler-gcc.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+commit ba858f46865c6751af3ddba03b176e4d5ecf85c1
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Oct 25 17:59:17 2015 -0400
+
+    Update size_overflow hash table
+
+ .../disable_size_overflow_hash.data                |    7 +++++++
+ .../size_overflow_plugin/size_overflow_hash.data   |    9 +--------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+commit ba803bceaea0283b38e91c1d3176bf0671786269
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Oct 25 15:31:17 2015 -0400
+
+    Fix oversight in pipacs' removal of FPU state from the task struct:
+    fpu_copy was performing an OOB copy starting from the address of the 'state'
+    pointer in the fpu struct instead of starting from the address pointed
+    to by the state pointer.  Reported at:
+    https://bugs.archlinux.org/task/46764
+
+ arch/x86/include/asm/fpu/internal.h |    4 ++--
+ arch/x86/kernel/fpu/core.c          |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 26e7d31c5b5c970c50297d2b8be165e9c9ab9d83
+Merge: 85d8735 a851b41
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Oct 25 13:39:21 2015 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit a851b41415a0402d76f10712b6950ddff3872a22
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Oct 25 13:38:25 2015 -0400
+
+    Update to latest size_overflow plugin release:
+    Temporarily ignore bitfield types: https://bugs.archlinux.org/task/46798
+    Use SI or wider type for the size_overflow type: https://forums.grsecurity.net/viewtopic.php?t=4293&p=15655#p15655
+
+ .../size_overflow_plugin/intentional_overflow.c    |    3 +++
+ .../size_overflow_plugin/size_overflow_plugin.c    |    2 +-
+ .../size_overflow_plugin/size_overflow_transform.c |    7 +++++++
+ .../size_overflow_transform_core.c                 |    2 --
+ 4 files changed, 11 insertions(+), 3 deletions(-)
+
+commit 85d8735a1d1190e3ad2e3f032ae88f811090fdfc
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Oct 25 13:01:32 2015 -0400
+
+    fpu doesn't live on the task_struct with PaX, so don't even bother computing some task_size
+    variable that isn't used for anything
+
+ arch/x86/kernel/fpu/init.c |   14 --------------
+ 1 files changed, 0 insertions(+), 14 deletions(-)
+
+commit cfd0008de8db38841f7f06b979482900994717b9
+Author: Hannes Frederic Sowa <hannes@stressinduktion.org>
+Date:   Fri Oct 16 11:32:42 2015 +0200
+
+    overflow-arith: begin to add support for overflow builtin functions
+    
+    The idea of the overflow-arith.h header is to collect overflow checking
+    functions in one central place.
+    
+    If gcc compiler supports the __builtin_overflow_* builtins we use them
+    because they might give better performance, otherwise the code falls
+    back to normal overflow checking functions.
+    
+    The builtin_overflow functions are supported by gcc-5 and clang. The
+    matter of supporting clang is to just provide a corresponding
+    CC_HAVE_BUILTIN_OVERFLOW, because the specific overflow checking builtins
+    don't differ between gcc and clang.
+    
+    I just provide overflow_usub function here as I intend this to get merged
+    into net, more functions will definitely follow as they are needed.
+    
+    Signed-off-by: Hannes Frederic Sowa <hannes@stressinduktion.org>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+ include/linux/compiler-gcc.h   |    4 ++++
+ include/linux/overflow-arith.h |   18 ++++++++++++++++++
+ 2 files changed, 22 insertions(+), 0 deletions(-)
+
+commit 18d5034650b637ec479f41d98e3912398b3e3efc
+Author: Hannes Frederic Sowa <hannes@stressinduktion.org>
+Date:   Fri Oct 16 11:32:43 2015 +0200
+
+    ipv6: protect mtu calculation of wrap-around and infinite loop by rounding issues
+    
+    Raw sockets with hdrincl enabled can insert ipv6 extension headers
+    right into the data stream. In case we need to fragment those packets,
+    we reparse the options header to find the place where we can insert
+    the fragment header. If the extension headers exceed the link's MTU we
+    actually cannot make progress in such a case.
+    
+    Instead of ending up in broken arithmetic or rounding towards 0 and
+    entering an endless loop in ip6_fragment, just prevent those cases by
+    aborting early and signal -EMSGSIZE to user space.
+    
+    Reported-by: Dmitry Vyukov <dvyukov@google.com>
+    Cc: Dmitry Vyukov <dvyukov@google.com>
+    Signed-off-by: Hannes Frederic Sowa <hannes@stressinduktion.org>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+ net/ipv6/ip6_output.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+commit 0e1d1c0f1981b4049a70d23dce4c69daf19f020b
+Merge: c81314c 9470e78
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Oct 25 11:51:44 2015 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 9470e7893a9a1bf15f9b7d412dc09bebb59105e8
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Oct 25 11:50:54 2015 -0400
+
+    Temporary squelching of overflow warning on skb_transport_offset(), will be fixed properly after H2HC
+
+ include/linux/skbuff.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit c81314ce278e9cfa3322881a6133c2c7e53b9430
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Oct 24 23:13:36 2015 -0400
+
+    Update recordmcount/fixdep paths in RPM spec, from Andrew
+
+ scripts/package/mkspec |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 798e4296bd55778b5e77f1db69c1bb972419590f
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Oct 24 23:11:22 2015 -0400
+
+    Update size_overflow hash table
+
+ .../disable_size_overflow_hash.data                |    3 +++
+ .../size_overflow_plugin/size_overflow_hash.data   |    5 +----
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit d9ef04f20fc634595883d1c1950c32a8fe04df22
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Oct 24 08:27:29 2015 -0400
+
+    Fix from Emese for https://forums.grsecurity.net/viewtopic.php?f=3&t=4291
+
+ drivers/usb/class/cdc-acm.h |    2 +-
+ include/linux/usb.h         |    8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit eea46f1d247f5f63e3762da91a41cba76567800f
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Fri Oct 23 18:24:57 2015 -0400
+
+    Update size_overflow hash tables
+
+ .../disable_size_overflow_hash.data                |    5 ++++-
+ .../size_overflow_plugin/size_overflow_hash.data   |    5 +----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 8f521b864bd7428f3ad42613416c106d1d619c4d
+Merge: 26adf00 285f0d1
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu Oct 22 19:41:57 2015 -0400
+
+    Merge branch 'pax-test' into grsec-test
+    
+    Conflicts:
+    	drivers/gpu/drm/drm_lock.c
+
+commit 285f0d1cda31b45ee217b90861677c032cb6550b
+Merge: d6dc25f 190bd21
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu Oct 22 19:40:34 2015 -0400
+
+    Merge branch 'linux-4.2.y' into pax-test
+    
+    Conflicts:
+    	arch/x86/kernel/process_64.c
+
+commit 26adf00caf8f4ebf155422082d4e8b8e4eb60eef
+Author: Eric W. Biederman <ebiederm@xmission.com>
+Date:   Sat Aug 15 13:36:12 2015 -0500
+
+    dcache: Handle escaped paths in prepend_path
+    
+    A rename can result in a dentry that by walking up d_parent
+    will never reach it's mnt_root.  For lack of a better term
+    I call this an escaped path.
+    
+    prepend_path is called by four different functions __d_path,
+    d_absolute_path, d_path, and getcwd.
+    
+    __d_path only wants to see paths are connected to the root it passes
+    in.  So __d_path needs prepend_path to return an error.
+    
+    d_absolute_path similarly wants to see paths that are connected to
+    some root.  Escaped paths are not connected to any mnt_root so
+    d_absolute_path needs prepend_path to return an error greater
+    than 1.  So escaped paths will be treated like paths on lazily
+    unmounted mounts.
+    
+    getcwd needs to prepend "(unreachable)" so getcwd also needs
+    prepend_path to return an error.
+    
+    d_path is the interesting hold out.  d_path just wants to print
+    something, and does not care about the weird cases.  Which raises
+    the question what should be printed?
+    
+    Given that <escaped_path>/<anything> should result in -ENOENT I
+    believe it is desirable for escaped paths to be printed as empty
+    paths.  As there are not really any meaninful path components when
+    considered from the perspective of a mount tree.
+    
+    So tweak prepend_path to return an empty path with an new error
+    code of 3 when it encounters an escaped path.
+    
+    Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+
+ fs/dcache.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit d402147a7689356c29bfd46a7cfa6594e517ab95
+Author: Salva Peiró <speirofr@gmail.com>
+Date:   Wed Oct 14 17:48:02 2015 +0200
+
+    staging/dgnc: fix info leak in ioctl
+    
+    The dgnc_mgmt_ioctl() code fails to initialize the 16 _reserved bytes of
+    struct digi_dinfo after the ->dinfo_nboards member. Add an explicit
+    memset(0) before filling the structure to avoid the info leak.
+    
+    Signed-off-by: Salva Peiró <speirofr@gmail.com>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+ drivers/staging/dgnc/dgnc_mgmt.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit bafc510c4fb4e8a5e69531fdc3a733e58c4bbdbf
+Author: Salva Peiró <speirofr@gmail.com>
+Date:   Wed Oct 7 07:09:26 2015 -0300
+
+    [media] media/vivid-osd: fix info leak in ioctl
+    
+    The vivid_fb_ioctl() code fails to initialize the 16 _reserved bytes of
+    struct fb_vblank after the ->hcount member. Add an explicit
+    memset(0) before filling the structure to avoid the info leak.
+    
+    Signed-off-by: Salva Peiró <speirofr@gmail.com>
+    Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+    Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+
+ drivers/media/platform/vivid/vivid-osd.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 980a903796ae06366fd5acbcd179ee2dc57fbabf
+Author: David Howells <dhowells@redhat.com>
+Date:   Mon Oct 19 11:20:28 2015 +0100
+
+    KEYS: Don't permit request_key() to construct a new keyring
+    
+    If request_key() is used to find a keyring, only do the search part - don't
+    do the construction part if the keyring was not found by the search.  We
+    don't really want keyrings in the negative instantiated state since the
+    rejected/negative instantiation error value in the payload is unioned with
+    keyring metadata.
+    
+    Now the kernel gives an error:
+    
+    	request_key("keyring", "#selinux,bdekeyring", "keyring", KEY_SPEC_USER_SESSION_KEYRING) = -1 EPERM (Operation not permitted)
+    
+    Signed-off-by: David Howells <dhowells@redhat.com>
+
+ security/keys/request_key.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+commit f705c157ed6f8a9c4c0cf552fd5f054d9d500550
+Author: Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Mon Oct 19 13:16:49 2015 +0300
+
+    irda: precedence bug in irlmp_seq_hb_idx()
+    
+    This is decrementing the pointer, instead of the value stored in the
+    pointer.  KASan detects it as an out of bounds reference.
+    
+    Reported-by: "Berry Cheng 程君(成淼)" <chengmiao.cj@alibaba-inc.com>
+    Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+ net/irda/irlmp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 4a110451298bfce895ed224e6bbd9201d8605b2b
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Oct 20 19:25:13 2015 -0400
+
+    Ratelimit the dump_stack as well, both to 15s with a burst of 3, enough not to completely
+    flood syslog
+
+ fs/exec.c |   11 +++++++++--
+ 1 files changed, 9 insertions(+), 2 deletions(-)
+
+commit 183fc2ae7d90e077fd27623998d82916260a2223
+Merge: a240939 d6dc25f
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Oct 20 19:16:04 2015 -0400
+
+    Merge branch 'pax-test' into grsec-test
+    
+    Conflicts:
+    	tools/gcc/size_overflow_plugin/size_overflow_plugin.c
+
+commit d6dc25f193a832e08d8e7cf097d7f70b3dc24776
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Oct 20 19:14:41 2015 -0400
+
+    Update to pax-linux-4.2.3-test16.patch:
+    - fixed undefined integer shift in proc_do_submiturb, reported by Arnaud <arnaud@drno.eu>
+    - fixed integer underflow in scm_detach_fds (similar to 1ac70e7ad24a88710cf9b6d7ababaefa2b575df0 upstream), reported by kdave (https://forums.grsecurity.net/viewtopic.php?f=1&t=4286)
+    - Emese added a temporary workaround for miscompiling the ath10k driver, reported by victor
+    - Emese fixed a false positive that affected the iwlwifi driver among others, reported by victor
+    - Emese disabled size overflow checking in acpi_ex_do_math_op and on acpi_object_integer, reported by xxterry1xx and rfnx (https://forums.grsecurity.net/viewtopic.php?f=3&t=4287)
+
+ drivers/net/wireless/ath/ath10k/ce.c               |    2 +-
+ drivers/usb/core/devio.c                           |    2 +-
+ fs/dlm/lowcomms.c                                  |    2 +-
+ net/core/scm.c                                     |    6 ++-
+ .../disable_size_overflow_hash.data                |    4 +-
+ .../size_overflow_plugin/intentional_overflow.c    |   44 --------------------
+ tools/gcc/size_overflow_plugin/size_overflow.h     |    1 -
+ .../size_overflow_plugin/size_overflow_hash.data   |    4 +-
+ .../size_overflow_plugin/size_overflow_plugin.c    |    4 +-
+ .../size_overflow_plugin/size_overflow_transform.c |    3 -
+ .../size_overflow_transform_core.c                 |    6 +++
+ 11 files changed, 19 insertions(+), 59 deletions(-)
+
+commit a2409394c2b0d97a9f02bf62ca4c0254602e58a6
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Oct 20 08:58:25 2015 -0400
+
+    set default to y
+
+ security/Kconfig |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 3abe24117389419654da44adc87a9a03ad7e3f38
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Oct 20 08:08:32 2015 -0400
+
+    Add a new config option from Emese to allow SIZE_OVERFLOW to be enabled
+    while having it not kill the userland process in an overflow condition.
+    This will help us obtain reports over the next few weeks while not making
+    some percentage of users' machines unusable.
+    
+    To enable this option, set CONFIG_PAX_SIZE_OVERFLOW_DISABLE_KILL=y in .config
+
+ fs/exec.c                                          |    5 +++++
+ security/Kconfig                                   |    4 ++++
+ .../size_overflow_plugin/size_overflow_plugin.c    |    4 ++--
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+commit bcae982f720ce0b3463a81f2b72a4807cb89048b
+Merge: 0e55d80 128d3a5
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Mon Oct 19 18:56:09 2015 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 128d3a5452ab001b29235b05eb0be3334fff3998
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Mon Oct 19 18:55:37 2015 -0400
+
+    Update to pax-linux-4.2.3-test14.patch:
+    - Emese fixed a false positive size overflow report, reported by gus (https://forums.grsecurity.net/viewtopic.php?t=4280)
+    - fixed an integer sign mixup in usb_stor_invoke_transport, reported by Arnaud <arnaud@drno.eu>
+
+ drivers/usb/storage/transport.c                    |    2 +-
+ .../size_overflow_plugin/size_overflow_plugin.c    |    2 +-
+ .../size_overflow_plugin/size_overflow_transform.c |   15 +++-
+ .../size_overflow_transform_core.c                 |   90 ++++++++++++++-----
+ 4 files changed, 81 insertions(+), 28 deletions(-)
+
 commit 0e55d80a65998266cab71804131a072fcc8ee558
 Merge: a61fd15 9c4310f
 Author: Brad Spengler <spender@grsecurity.net>
