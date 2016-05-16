@@ -1,3 +1,159 @@
+commit fbc84d202d311b4dc09bcc922678df60b6e76614
+Merge: 84fa82c 238dfca
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Fri May 13 18:00:06 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 238dfca3ffe87f4410e67c8ceb554b9ce4f3132b
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Fri May 13 17:59:42 2016 -0400
+
+    Compile fix for older gcc
+
+ tools/gcc/size_overflow_plugin/intentional_overflow.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 84fa82c59fa5051e1485a3dcc857b87b70dbc18d
+Merge: 2cece8e 4654023
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Fri May 13 17:31:49 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 4654023e72b0834142594eee879e657664498443
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Fri May 13 17:29:38 2016 -0400
+
+    Update to pax-linux-4.5.4-test7.patch:
+    - changed the RAP hash emission code to accomodate x86 disassemblers, suggested by Mathias Krause <minipli@ld-linux.so>
+    - fixed a few size overflow false positives in JFS due to the lack of endian conversion macros for signed types, reported by ryonaloli via hunger
+    - fixed a compiler assert triggered by the size overflow plugin
+
+ tools/gcc/rap_plugin/rap_plugin.c                  | 39 ++++++++++++++++++----
+ .../disable_size_overflow_hash.data                |  3 ++
+ .../size_overflow_plugin/intentional_overflow.c    |  2 +-
+ .../size_overflow_plugin/size_overflow_hash.data   |  3 --
+ 4 files changed, 36 insertions(+), 11 deletions(-)
+
+commit 2cece8e8e0e2fce9943345c0ebebd7436929868e
+Merge: 6df0471 ea68d2e
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu May 12 18:41:15 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit ea68d2e7123a83aba24db99d5ef487b1397fd6d0
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu May 12 18:40:50 2016 -0400
+
+    Update to pax-linux-4.5.3-test6.patch:
+    - really fixed https://forums.grsecurity.net/viewtopic.php?f=3&t=4473
+    - the nfsd_proc_read fix for RAP had a typo causing an oops, reported by Carlos Carvalho (https://forums.grsecurity.net/viewtopic.php?f=3&t=4471)
+    - fixed a few format string warnings in the RAP hash emission code, reported by Dwokfur
+
+ drivers/net/ppp/pptp.c               |  1 -
+ fs/nfsd/nfsproc.c                    |  2 +-
+ tools/gcc/rap_plugin/rap_fptr_pass.c |  2 +-
+ tools/gcc/rap_plugin/rap_plugin.c    | 14 ++++++++++----
+ 4 files changed, 12 insertions(+), 7 deletions(-)
+
+commit 6df04719a7cf4d3f60c9e6190f8eb4b986ce2b1b
+Author: David Howells <dhowells@redhat.com>
+Date:   Tue Feb 23 11:03:12 2016 +0000
+
+    KEYS: Fix ASN.1 indefinite length object parsing
+    
+    This fixes CVE-2016-0758.
+    
+    In the ASN.1 decoder, when the length field of an ASN.1 value is extracted,
+    it isn't validated against the remaining amount of data before being added
+    to the cursor.  With a sufficiently large size indicated, the check:
+    
+    	datalen - dp < 2
+    
+    may then fail due to integer overflow.
+    
+    Fix this by checking the length indicated against the amount of remaining
+    data in both places a definite length is determined.
+    
+    Whilst we're at it, make the following changes:
+    
+     (1) Check the maximum size of extended length does not exceed the capacity
+         of the variable it's being stored in (len) rather than the type that
+         variable is assumed to be (size_t).
+    
+     (2) Compare the EOC tag to the symbolic constant ASN1_EOC rather than the
+         integer 0.
+    
+     (3) To reduce confusion, move the initialisation of len outside of:
+    
+    	for (len = 0; n > 0; n--) {
+    
+         since it doesn't have anything to do with the loop counter n.
+    
+    Signed-off-by: David Howells <dhowells@redhat.com>
+    Reviewed-by: Mimi Zohar <zohar@linux.vnet.ibm.com>
+    Acked-by: David Woodhouse <David.Woodhouse@intel.com>
+    Acked-by: Peter Jones <pjones@redhat.com>
+
+ lib/asn1_decoder.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+commit acb6cef8047476b8afc3ff3f07286b9e36de1b77
+Merge: 735f14a a7c9bec
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed May 11 17:05:21 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit a7c9bec57dea73ceee1246a64df55038ea840be9
+Merge: f5bd134 a29ab35
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed May 11 17:04:48 2016 -0400
+
+    Merge branch 'linux-4.5.y' into pax-test
+
+commit 735f14a2b5562cd1329b263a81781d59dacffd3e
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed May 11 06:57:40 2016 -0400
+
+    Fix typo in nfsd RAP changes causing oops reported by Carlos Carvalho
+    at: https://forums.grsecurity.net/viewtopic.php?f=3&t=4471
+
+ fs/nfsd/nfsproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 35e1e615072d0bb885b38ee1b2ada7a0a6a91f9d
+Merge: 9e3e5ae3e f5bd134
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue May 10 20:56:54 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit f5bd1342fa631bb3b69a2e8919785c827c4edf74
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue May 10 20:55:57 2016 -0400
+
+    Update to pax-linux-4.5.3-test5.patch:
+    - marked all indirectly callable x86 asm crypto functions, reported by Dwokfur and minipli (https://forums.grsecurity.net/viewtopic.php?f=3&t=4468)
+    - worked around an intentional integer overflow introduced by gcc-6 that triggered a size overflow false positive, reported by hooruD, chron and Fen (https://forums.grsecurity.net/viewtopic.php?f=3&t=4469)
+    - made some preparations for enabling RAP on i386 as well, will have to wait due to KERNEXEC
+
+ arch/x86/crypto/aesni-intel_asm.S                  |  6 +++---
+ arch/x86/crypto/sha-mb/sha1_mb_mgr_flush_avx2.S    |  4 ++--
+ arch/x86/crypto/sha-mb/sha1_mb_mgr_submit_avx2.S   |  2 +-
+ arch/x86/crypto/sha256_ni_asm.S                    |  2 +-
+ arch/x86/crypto/twofish-i586-asm_32.S              |  2 +-
+ arch/x86/entry/common.c                            |  1 -
+ include/linux/linkage.h                            | 22 +++++++++++++++-------
+ tools/gcc/rap_plugin/rap_fptr_pass.c               |  2 +-
+ tools/gcc/rap_plugin/rap_hash.c                    |  1 +
+ tools/gcc/rap_plugin/rap_plugin.c                  | 18 +++++++++---------
+ .../disable_size_overflow_hash.data                |  1 +
+ .../size_overflow_plugin/size_overflow_hash.data   |  1 -
+ 12 files changed, 35 insertions(+), 27 deletions(-)
+
 commit 9e3e5ae3e9ed69452d4133490dd1831376b9a1e8
 Merge: e5983fd cfcaa03
 Author: Brad Spengler <spender@grsecurity.net>
