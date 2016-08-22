@@ -1,3 +1,49 @@
+commit 7276656b983ed5e39010c54908005e0574a2d3fd
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Aug 21 17:36:48 2016 -0400
+
+    Update size_overflow hash table
+
+ scripts/gcc-plugins/size_overflow_plugin/size_overflow_hash.data | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit 18a6c9305d45e83c3bebf07eb132885da34b73da
+Merge: 5cbf490 2a27d24
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Aug 21 16:59:37 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 2a27d2419704b09b554b75d6397bf26ffd45754b
+Merge: 7be9261 84fae3f
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sun Aug 21 16:57:07 2016 -0400
+
+    Merge branch 'linux-4.7.y' into pax-test
+
+commit 5cbf4905a069cf66895ff7a06673f8102e3faab5
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Aug 16 17:23:45 2016 -0400
+
+    forward-port !PAX_ASLR change
+
+ arch/x86/mm/mmap.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
+
+commit c7d89a55e70af76005662d4a4c9c7db3a4cb7998
+Merge: a144f0f8 7be9261
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Aug 16 17:14:06 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 7be92610b9cff4e90a4f84a385086c5f643004a0
+Merge: cb11f67 95f15f5
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Aug 16 17:13:54 2016 -0400
+
+    Merge branch 'linux-4.7.y' into pax-test
+
 commit a144f0f806ea8a109483a945d2e92474b57ef03c
 Author: Brad Spengler <spender@grsecurity.net>
 Date:   Mon Aug 15 17:54:00 2016 -0400
