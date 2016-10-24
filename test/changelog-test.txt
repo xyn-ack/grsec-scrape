@@ -1,3 +1,141 @@
+commit d07e77f258d26721b33ae26dfa5fd8d408aabf57
+Merge: 4630c95 7449af19
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Oct 22 18:32:55 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 7449af196b6733891d273f46559efdc168dec22a
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Oct 22 18:31:39 2016 -0400
+
+    Update to pax-linux-4.7.10-test8.patch:
+    - Emese removed a potential false positive from the size overflow hash tables
+    - fixed a few incorrect callback types in ACPI/BGRT caught by RAP, reported by foxxx0 (https://forums.grsecurity.net/viewtopic.php?f=3&t=4586)
+    - fixed a few size overflow false positives related to dev_t, reported by fx3 (https://forums.grsecurity.net/viewtopic.php?f=3&t=4583)
+
+ drivers/acpi/bgrt.c                                | 30 +++++++++++-----------
+ include/linux/kobject.h                            |  7 +++++
+ scripts/gcc-plugins/size_overflow_plugin/Makefile  |  2 +-
+ .../gcc-plugins/size_overflow_plugin/disable.data  |  8 +++++-
+ .../gcc-plugins/size_overflow_plugin/e_fields.data | 10 ++------
+ 5 files changed, 32 insertions(+), 25 deletions(-)
+
+commit 4630c95d3d9c20cffe2ba65521217ad537567ac9
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Oct 22 09:19:43 2016 -0400
+
+    compile fix
+
+ fs/utimes.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit ee9aeeeb02187281bcc233dd26f6ff4d6814d309
+Merge: 7b8d5c5 309d942
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Oct 22 08:01:34 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 309d94235d552d65c253027528a9dd46962cf385
+Merge: 013fc76 b3afc45
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Oct 22 07:53:44 2016 -0400
+
+    Merge branch 'linux-4.7.y' into pax-test
+
+commit 7b8d5c5a1477a2b62dc7ad1c28e864d7d250739c
+Merge: ca352cc 013fc76
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu Oct 20 07:49:24 2016 -0400
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 013fc7689892902c41d38e31057e4a5686293e40
+Merge: 25eaf06 452063d
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu Oct 20 07:48:01 2016 -0400
+
+    Merge branch 'linux-4.7.y' into pax-test
+
+commit ca352cccec60c85fad6dedaf229d51eddfdfea58
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu Oct 20 07:06:54 2016 -0400
+
+    compile fix as reported by David Sterba
+
+ include/linux/mm.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 82566bede4206afba0d8b11f58570d588d39586b
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu Oct 13 13:07:36 2016 -0700
+
+    mm: remove gup_flags FOLL_WRITE games from __get_user_pages()
+    
+    This is an ancient bug that was actually attempted to be fixed once
+    (badly) by me eleven years ago in commit 4ceb5db9757a ("Fix
+    get_user_pages() race for write access") but that was then undone due to
+    problems on s390 by commit f33ea7f404e5 ("fix get_user_pages bug").
+    
+    In the meantime, the s390 situation has long been fixed, and we can now
+    fix it by checking the pte_dirty() bit properly (and do it better).  The
+    s390 dirty bit was implemented in abf09bed3cce ("s390/mm: implement
+    software dirty bits") which made it into v3.9.  Earlier kernels will
+    have to look at the page state itself.
+    
+    Also, the VM has become more scalable, and what used a purely
+    theoretical race back then has become easier to trigger.
+    
+    To fix it, we introduce a new internal FOLL_COW flag to mark the "yes,
+    we already did a COW" rather than play racy games with FOLL_WRITE that
+    is very fundamental, and then use the pte dirty flag to validate that
+    the FOLL_COW flag is still valid.
+    
+    Reported-and-tested-by: Phil "not Paul" Oester <kernel@linuxace.com>
+    Acked-by: Hugh Dickins <hughd@google.com>
+    Reviewed-by: Michal Hocko <mhocko@suse.com>
+    Cc: Andy Lutomirski <luto@kernel.org>
+    Cc: Kees Cook <keescook@chromium.org>
+    Cc: Oleg Nesterov <oleg@redhat.com>
+    Cc: Willy Tarreau <w@1wt.eu>
+    Cc: Nick Piggin <npiggin@gmail.com>
+    Cc: Greg Thelen <gthelen@google.com>
+    Cc: stable@vger.kernel.org
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+ include/linux/mm.h |  2 +-
+ mm/gup.c           | 14 ++++++++++++--
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+
+commit d291c94e650da2d8918620e6829e05218755f77b
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed Oct 19 17:06:17 2016 -0400
+
+    resync with PaX
+
+ arch/arm/include/asm/atomic.h | 5 -----
+ 1 file changed, 5 deletions(-)
+
+commit 251313cb6e1d5b2ad84c62333ebafa278e861a68
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed Oct 19 17:03:14 2016 -0400
+
+    Fix bad ARM REFCOUNT merge with PaX, reported by kdave on the forums:
+    https://forums.grsecurity.net/viewtopic.php?f=3&t=4588
+
+ arch/arm/include/asm/atomic.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit b64df18d4160c6d3cd470202bb8d58f38d9acb51
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Mon Oct 17 07:47:53 2016 -0400
+
+    randomize layout of subprocess_info struct
+
+ include/linux/kmod.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 commit 5780e7fb9d334bfa5cc8aef32af631e620dede3f
 Merge: 7c69071 25eaf06
 Author: Brad Spengler <spender@grsecurity.net>
