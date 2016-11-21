@@ -1,3 +1,144 @@
+commit 5c7c04f7c8fcb7a3730b34db41a0842ef0dbed51
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Nov 19 19:50:51 2016 -0500
+
+    compile fix
+
+ drivers/platform/x86/toshiba-wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 05eb3d0ec6643c60f794937ba562fea97f5be897
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Nov 19 19:32:09 2016 -0500
+
+    compile fix
+
+ net/netfilter/nf_log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fb9517eef2f4321b99e1427728ea81e7beb6709e
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Nov 19 19:26:19 2016 -0500
+
+    compile fix
+
+ drivers/platform/x86/toshiba-wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d7be8fc340893cb7a61f295adf357433684c1412
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Nov 19 18:50:43 2016 -0500
+
+    Fix an instance of DMA on stack reported by jotik
+
+ drivers/tty/hvc/hvc_console.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+commit 491d119de68bd80666a5e0c9a45538b03a7e0359
+Merge: d06ab17 ec40a67
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Nov 19 09:49:17 2016 -0500
+
+    Merge branch 'pax-test' into grsec-test
+
+commit ec40a67f38da6771cc50d21b8bdfef7fe85c13f9
+Merge: d10440d 8765773
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Nov 19 09:48:59 2016 -0500
+
+    Merge branch 'linux-4.8.y' into pax-test
+
+commit d06ab1776f143f4c0f040b37b5d4be02fb4c2b2f
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed Nov 16 20:06:47 2016 -0500
+
+    Move location of GRKERNSEC_BRUTE call, otherwise on systems with suid
+    dumping enabled, the crash of a suid/fscapped binary will not produce a
+    coredump as a SIGKILL to the other threads of the process will trigger
+    a group exit.  Thanks to Michael Hu and Meenakshi Selvaraj for the report!
+
+ fs/coredump.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 2deb6e90bf515a547273218c9e5e80362cedf5f4
+Merge: 538290f d10440d
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Nov 15 07:22:21 2016 -0500
+
+    Merge branch 'pax-test' into grsec-test
+
+commit d10440da199a8c4601cf572c85c240b391d7ff1c
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Nov 15 07:21:39 2016 -0500
+
+    Forward-port PaX INITIFY updates:
+    - Emese fixed an infinite recursion bug in the initify plugin that triggered with certain gcc versions, reported by spender
+    - fixed a copy-paste error in the previous initify compile error fix
+
+ scripts/gcc-plugins/initify_plugin.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+commit 538290f125d86e96ca1cb58ec6b6dc42c6df94f5
+Merge: 29790c8 0651bb9
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Nov 15 07:16:37 2016 -0500
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 0651bb9a29497614f2ac8907576e13c25d14417d
+Merge: 3dccfc8 61385cc
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Tue Nov 15 07:16:23 2016 -0500
+
+    Merge branch 'linux-4.8.y' into pax-test
+
+commit 29790c808b36fed3643adb45a52ddd1eaf215d5a
+Merge: 884f7d7 3dccfc8
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Mon Nov 14 21:55:00 2016 -0500
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 3dccfc8eb94c31bb44f90f2d5673867d47ceeae1
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Mon Nov 14 21:53:56 2016 -0500
+
+    Forward-ported PaX updates (so all patches can be released tonight):
+    - worked around a false positive initify report with KMEMCHECK, reported by spender
+    - fixed a compile error of the initify plugin with gcc 4.5
+
+ lib/Kconfig.kmemcheck                | 1 +
+ scripts/gcc-plugins/initify_plugin.c | 8 ++++++++
+ 2 files changed, 9 insertions(+)
+
+commit 884f7d7137f2cb388491c398a22b555c9e04bd3b
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Mon Nov 14 08:52:36 2016 -0500
+
+    re-enable INITIFY
+
+ security/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 1199c8fee72e0204eef6e517acf1d17e1edb35d0
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Nov 12 09:28:52 2016 -0500
+
+    always clear after restore
+
+ kernel/power/snapshot.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+commit 6ee3a03e6b4610d3a4c8536222e613c9381d310a
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Nov 12 07:48:59 2016 -0500
+
+    Remove duplicate function definition caused by bad git merge
+    Thanks to Toralf Foerster for the report
+
+ kernel/power/snapshot.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
+
 commit 972fc7c4ab01bed5011f92621c0235a29b964321
 Merge: b797a7f 179609c
 Author: Brad Spengler <spender@grsecurity.net>
