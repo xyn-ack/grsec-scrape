@@ -1,3 +1,83 @@
+commit 9f575ef66df46cb78f751e0d8d509171afe3933e
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Feb 18 13:09:26 2017 -0500
+
+    Update size_overflow hash table
+
+commit e927308508ef20392a61e493bc411e73d597682f
+Merge: 55d2e75 d711991
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Feb 18 11:35:11 2017 -0500
+
+    Merge branch 'pax-test' into grsec-test
+
+commit d711991b1628e84076fde9b2c94d25920cca7882
+Merge: 70fbe2f eee1550
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Sat Feb 18 11:34:56 2017 -0500
+
+    Merge branch 'linux-4.9.y' into pax-test
+
+commit 55d2e7501a1db909073644bb1b5c58effb627754
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu Feb 16 19:47:51 2017 -0500
+
+    Allow symbol printing for softirq change
+
+commit e489c2948bc9e1d9643c84667bf81ac8387293e0
+Merge: d7b63ba 70fbe2f
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu Feb 16 19:47:37 2017 -0500
+
+    Merge branch 'pax-test' into grsec-test
+    
+    n why this merge is necessary,
+
+commit 70fbe2fc1540632d2cc67e770d826f9637b5b73f
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Thu Feb 16 19:46:55 2017 -0500
+
+    Update to pax-linux-4.9.10-test4.patch:
+    - worked around a gcc induced integer truncation that triggered a size overflow, reported by René Korthaus (https://bugs.gentoo.org/show_bug.cgi?id=609500)
+    - disabled size overflow checking on qdisc_tree_reduce_backlog for good as newer gcc is smart enough to get around the previous workaround, reported by craftyguy (https://forums.grsecurity.net/viewtopic.php?f=3&t=4640)
+    - fixed a SEGMEXEC/vma mirroring regression, reported by osea (https://forums.grsecurity.net/viewtopic.php?f=3&t=4643)
+
+commit d7b63bad761e0ca8897ec9c5df4482483aa20201
+Merge: d310a9c b6296dc
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed Feb 15 20:18:47 2017 -0500
+
+    Merge branch 'pax-test' into grsec-test
+
+commit b6296dc3544b4a4543a45777a5cc1ecb2ce51042
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed Feb 15 20:16:32 2017 -0500
+
+    Update to pax-linux-4.9.9-test3.patch:
+    - fixed a compile error on i386 with X86_CMPXCHG64=n, by Natanael Copa <ncopa@alpinelinux.org>
+    - Emese fixed a few section mismatches and compile errors caused by the initify plugin, reported by Kees Cook, hunger and Valdis Kletnieks
+    - fixed a compile error caused by type mismatches on i386, reported by spender
+
+commit d310a9c0ab751121a5f97196857bfe4e90d86adf
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed Feb 15 20:03:55 2017 -0500
+
+    compile fix, reported by ncopa
+
+commit f6fed850d763aca4162bc24b29afe5bb23d49d91
+Merge: c3fff1a 1971888
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed Feb 15 17:21:00 2017 -0500
+
+    Merge branch 'pax-test' into grsec-test
+
+commit 19718886c80977af99f8181fe8e91b0f6f1fb5f7
+Merge: b608a1f 390caee
+Author: Brad Spengler <spender@grsecurity.net>
+Date:   Wed Feb 15 17:20:51 2017 -0500
+
+    Merge branch 'linux-4.9.y' into pax-test
+
 commit c3fff1a653824ad47021d536dec50e8c937e6347
 Merge: 57a5c6d b608a1f
 Author: Brad Spengler <spender@grsecurity.net>
